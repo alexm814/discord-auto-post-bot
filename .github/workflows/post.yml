@@ -1,0 +1,29 @@
+name: Discord Auto Post
+
+on:
+  schedule:
+    # ⏰ Planification en UTC !
+    # Paris 09:00, 14:00, 20:00 = 07:00, 12:00, 18:00 UTC (pendant l'heure d'été)
+    - cron: "0 7,12,18 * * *"
+  workflow_dispatch: {}  # permet de lancer manuellement
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install node-fetch
+        run: npm install node-fetch@3
+
+      - name: Send message to Discord
+        run: node post.js
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
